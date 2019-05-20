@@ -34,7 +34,7 @@ module Peatio
             'Content-Type' => 'application/json' }
         response.assert_2xx!
         response = JSON.parse(response.body)
-        response.dig('result').tap do |result|
+        response.fetch('result').tap do |result|
           raise ResponseError.new(result['error_code'], result['error_message']) if result['status'] == 'error'
         end
         response.fetch('result')
