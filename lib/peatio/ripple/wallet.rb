@@ -81,8 +81,8 @@ module Peatio
             DestinationTag:     destination_tag,
             TransactionType:    'Payment',
             LastLedgerSequence: latest_block_number + 4
-          }
-        }]
+            }
+          }]
 
         client.json_rpc(:sign, params).yield_self do |result|
           if result['status'].to_s == 'success'
@@ -95,51 +95,18 @@ module Peatio
 
       # Returns fee in drops that is enough to process transaction in current ledger
       def calculate_current_fee
-        # Get blockchain fee
-        # curl -X POST -H 'Content-Type: application/json'
-        #      --data '{
-        #               "jsonrpc":"2.0",
-        #               "id":1,"method":"fee",
-        #               "params": [{}]
-        #               }'
-        #      http://user:password@127.0.0.1:5005
-
         client.json_rpc(:fee, {}).yield_self do |result|
           result.dig('drops', 'open_ledger_fee').to_i
         end
       end
 
       def latest_block_number
-        # Fetch latest ledger and get it index
-        # curl -X POST -H 'Content-Type: application/json'
-        #      --data '{
-        #               "jsonrpc":"2.0",
-        #               "id":1,"method":"ledger",
-        #               "params": [{
-        #                           "ledger_index": "validated",
-        #                         }]
-        #               }'
-        #      http://user:password@127.0.0.1:5005
-
         client.json_rpc(:ledger, [{ ledger_index: 'validated' }]).fetch('ledger_index')
       rescue Client::Error => e
         raise Peatio::Blockchain::ClientError, e
       end
 
       def load_balance!
-        # Fetch account_info for define balance
-        # curl -X POST -H 'Content-Type: application/json'
-        #      --data '{
-        #               "jsonrpc":"2.0",
-        #               "id":1,"method":"account_info",
-        #               "params": [{
-        #                           "ledger_index": "validated",
-        #                           "account": "rHb9CJAWyB3rj91VRWn96DkukG4bwdtyTh",
-        #                           "strict": true
-        #                         }]
-        #               }'
-        #      http://user:password@127.0.0.1:5005
-
         client.json_rpc(:account_info,
                         [account: normalize_address(@wallet.fetch(:address)), ledger_index: 'validated', strict: true])
                         .fetch('account_data')
@@ -150,6 +117,8 @@ module Peatio
       rescue Client::Error => e
         raise Peatio::Wallet::ClientError, e
       end
+
+      private
 
       def destination_tag_from(address)
         address =~ /\?dt=(\d*)\Z/

@@ -7,7 +7,7 @@ PATH
       faraday (~> 0.15.4)
       memoist (~> 0.16.0)
       passgen (~> 1.0.2)
-      peatio (~> 0.6.0)
+      peatio (~> 0.6.1)
 
 GEM
   remote: https://rubygems.org/
@@ -57,7 +57,7 @@ GEM
     multipart-post (2.1.1)
     mysql2 (0.5.2)
     passgen (1.0.2)
-    peatio (0.6.0)
+    peatio (0.6.1)
       activemodel (~> 5.2.3)
       amqp
       bunny

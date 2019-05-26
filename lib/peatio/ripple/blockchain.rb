@@ -24,19 +24,6 @@ module Peatio
       end
 
       def fetch_block!(ledger_index)
-        # Fetch transactions for particular ledger.
-        # curl -X POST -H 'Content-Type: application/json'
-        #      --data '{
-        #               "jsonrpc":"2.0",
-        #               "id":1,"method":"ledger",
-        #               "params": [{
-        #                           "ledger_index": ledger_index || "validated",
-        #                           "transactions": true,
-        #                           "expand": true
-        #                         }]
-        #               }'
-        #      http://user:password@127.0.0.1:5005
-
         ledger = client.json_rpc(:ledger,
                                      [
                                        {
@@ -60,36 +47,12 @@ module Peatio
       end
 
       def latest_block_number
-        # Fetch latest ledger and get it index
-        # curl -X POST -H 'Content-Type: application/json'
-        #      --data '{
-        #               "jsonrpc":"2.0",
-        #               "id":1,"method":"ledger",
-        #               "params": [{
-        #                           "ledger_index": "validated",
-        #                         }]
-        #               }'
-        #      http://user:password@127.0.0.1:5005
-
         client.json_rpc(:ledger, [{ ledger_index: 'validated' }]).fetch('ledger_index')
       rescue Client::Error => e
         raise Peatio::Blockchain::ClientError, e
       end
 
       def load_balance_of_address!(address, currency_id)
-        # Fetch account_info for define balance
-        # curl -X POST -H 'Content-Type: application/json'
-        #      --data '{
-        #               "jsonrpc":"2.0",
-        #               "id":1,"method":"account_info",
-        #               "params": [{
-        #                           "ledger_index": "validated",
-        #                           "account": "rHb9CJAWyB3rj91VRWn96DkukG4bwdtyTh",
-        #                           "strict": true
-        #                         }]
-        #               }'
-        #      http://user:password@127.0.0.1:5005
-
         currency = settings[:currencies].find { |c| c[:id] == currency_id.to_s }
         raise UndefinedCurrencyError unless currency
 
@@ -110,14 +73,6 @@ module Peatio
         destination_tag = tx_hash['DestinationTag'] || destination_tag_from(tx_hash['Destination'])
         address = "#{to_address(tx_hash)}?dt=#{destination_tag}"
 
-        # {:hash=>"414E6894B92B7AAD647D25871EFE2E76AEABA1C346E6B487CB4D5F83F24C9B07",
-        #   :txout=>0,
-        #   :to_address=>"rHb9CJAWyB3rj91VRWn96DkukG4bwdtyTh",
-        #   :amount=>0.1e0,
-        #   :status=>"success",
-        #   :currency_id=>currency[:id]}
-        # Build transaction for each currency belonging to blockchain.
-
         settings_fetch(:currencies).each_with_object([]) do |currency, formatted_txs|
           formatted_txs << { hash: tx_hash['hash'],
                              txout: tx_hash.dig('metaData','TransactionIndex'),
@@ -126,10 +81,6 @@ module Peatio
                              currency_id: currency[:id],
                              amount: convert_from_base_unit(tx_hash.fetch('Amount'), currency) }
         end
-      end
-
-      def client
-        @client ||= Client.new(settings_fetch(:server))
       end
 
       def settings_fetch(key)
@@ -172,6 +123,10 @@ module Peatio
 
       def convert_from_base_unit(value, currency)
         value.to_d / currency.fetch(:base_factor).to_d
+      end
+
+      def client
+        @client ||= Client.new(settings_fetch(:server))
       end
     end
   end
