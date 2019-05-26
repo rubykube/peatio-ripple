@@ -10,7 +10,7 @@ module Peatio
 
       UndefinedCurrencyError = Class.new(StandardError)
 
-      DEFAULT_FEATURES = {case_sensitive: true, cash_addr_format: false}.freeze
+      DEFAULT_FEATURES = { case_sensitive: true, cash_addr_format: false }.freeze
 
       def initialize(custom_features = {})
         @features = DEFAULT_FEATURES.merge(custom_features).slice(*SUPPORTED_FEATURES)
@@ -18,6 +18,8 @@ module Peatio
       end
 
       def configure(settings = {})
+        # Clean client state during configure.
+        @client = nil
         @settings.merge!(settings.slice(*SUPPORTED_SETTINGS))
       end
 
@@ -45,7 +47,6 @@ module Peatio
                                      ]).dig('ledger')
 
         return if ledger.blank?
-
         ledger.fetch('transactions').each_with_object([]) do |tx, txs_array|
           next unless valid_transaction?(tx)
 
