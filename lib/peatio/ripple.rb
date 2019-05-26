@@ -1,5 +1,6 @@
 require "peatio/ripple/version"
 require "active_support/core_ext/object/blank"
+require "passgen"
 require "peatio"
 
 module Peatio
@@ -10,7 +11,5 @@ module Peatio
 
     require "peatio/ripple/hooks"
     require "peatio/ripple/version"
-    class Error < StandardError; end
-    # Your code goes here...
   end
 end

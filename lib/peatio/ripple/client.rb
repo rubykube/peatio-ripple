@@ -40,7 +40,7 @@ module Peatio
         response.fetch('result')
       rescue => e
         if e.is_a?(Error)
-          raise e
+          raise e, e.message
         elsif e.is_a?(Faraday::Error)
           raise ConnectionError, e
         else
