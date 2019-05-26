@@ -76,7 +76,7 @@ module Peatio
           tx_json: {
             Account:            account_address,
             Amount:             amount.to_s,
-            Fee:                fee,
+            Fee:                fee.to_s,
             Destination:        destination_address,
             DestinationTag:     destination_tag,
             TransactionType:    'Payment',
