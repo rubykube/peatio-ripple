@@ -45,7 +45,7 @@ RSpec.describe Peatio::Ripple::Wallet do
     after(:all)  { WebMock.allow_net_connect! }
 
     before do
-      Passgen.stubs(:generate).returns('pass@word')
+      PasswordGenerator.stubs(:generate).returns('pass@word')
       SecureRandom.stubs(:random_number).returns(1)
     end
 
