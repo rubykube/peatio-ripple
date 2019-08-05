@@ -24,7 +24,7 @@ module Peatio
 
       def create_address!(_setting)
         {
-          address: "#{@wallet[:address]}?dt=#{SecureRandom.random_number(10**9)}",
+          address: "#{@wallet[:address]}?dt=#{SecureRandom.random_number(10**6)}",
           secret: @wallet[:secret]
         }
       end

@@ -6,7 +6,7 @@ For Peatio Ripple plugin integration you need to do the following steps:
 
 1. Add peatio-ripple gem into your Gemfile.plugin
 ```ruby
-gem 'peatio-ripple', '~> 0.1.0'
+gem 'peatio-ripple', '~> 0.1.1'
 ```
 
 2. Run `bundle install` for updating Gemfile.lock
